@@ -1,0 +1,42 @@
+server:
+  port: 8887
+
+logging:
+  file:
+    path: D:\tools\logs\huven-bbs
+  level:
+    com.huvenbbs.community: debug
+
+# 使用 @Value(${github.client.id}}) 将参数注入
+github:
+  client:
+    id: d09a650263d08038e5be
+    uri: http://localhost:8887/callback
+  redirect:
+    secret: a7d28146600381a892d83930185c326e5610a5e7
+
+
+# 连接 H2 数据库
+#spring:
+#  datasource:
+#    url: jdbc:h2:~/community
+#    data-username: root
+#    password: 123456
+#    driver-class-name: org.h2.Driver
+
+# MySQL数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/hb
+    # 连接池类型
+    type: com.alibaba.druid.pool.DruidDataSource
+
+# mybatis配置
+mybatis:
+  # 配置映射文件
+  mapper-locations: classpath:mapper/*.xml
+  # 配置实体类的包路径
+  type-aliases-package: com.huvenbbs.community.pojo
