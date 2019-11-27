@@ -8,6 +8,10 @@
         select * from t_user
     </select>
 
+    <select id="findByToken" resultType="User">
+        select * from t_user where token=#{token}
+    </select>
+
     <!-- 这里我之前用的 parameterMap 是会报错的(被官方弃用了),替换成 parameterType 解决-->
     <insert id="insert" parameterType="User">
         insert into t_user(name,account_id,token,gmt_create,gmt_modified) values(#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified})

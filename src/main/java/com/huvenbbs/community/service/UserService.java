@@ -15,4 +15,8 @@ private UserMapper userMapper;
     public void insert(User user) {
         userMapper.insert(user);
     }
+    @Override
+    public User findByToken(String token) {
+       return userMapper.findByToken(token);
+    }
 }

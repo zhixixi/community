@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
@@ -36,16 +38,19 @@ public class AuthorizeController {
 
     @Autowired
     private UserService userService;
+
     /**
      * 接受我们的参数 code , state
+     *
      * @param code
      * @param state
      * @return
      */
     @RequestMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
-                           @RequestParam(name = "state")String state,
-                           HttpServletRequest httpServletRequest) {
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest httpServletRequest,
+                           HttpServletResponse response) {
         AccessTokenDto accessTokenDto = new AccessTokenDto();
         accessTokenDto.setCode(code);
         accessTokenDto.setRedirect_uri(clientUri);
@@ -57,14 +62,15 @@ public class AuthorizeController {
         //通过 accessToken 可以在 Github中拿到 User信息
         GithubUser githubUser = githubProvider.getGithubUser(accessToken);
         System.out.println("认证的Github用户名为:" + githubUser.getName());
-        if (githubUser != null) {
+        if (githubUser != null && githubUser.getId() != null) {
             System.out.println(githubUser);
-            // 登录成功,将对象放进 session
-            httpServletRequest.getSession().setAttribute("user",githubUser);
+            // 登录成功,写session 和 cookie
+            httpServletRequest.getSession().setAttribute("user", githubUser);
             //将数据插入到数据库中
             User user = new User();
             // 一般使用UUID 来做token
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setName(githubUser.getName());
             // GitHub的id是Long,User的AccountId是 String 类型的, 类型转换
             user.setAccountId(String.valueOf(githubUser.getId()));
@@ -73,17 +79,21 @@ public class AuthorizeController {
             user.setGmtModified(user.getGmtCreate());
             // 插入数据库
             userService.insert(user);
-            return "redirect:/";
-        }else {
+            // 写cookie
+            Cookie cookie = new Cookie("token",token);
+            cookie.setMaxAge(60*60*24*30*6);
+            response.addCookie(cookie);
+            return "redirect:/index";
+        } else {
             // 登录失败
             System.out.println("空");
-            return "redirect:/";
+            return "redirect:/index";
         }
 //        return "index";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest httpServletRequest){
+    public String logout(HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
         // 删除session
         session.removeAttribute("user");

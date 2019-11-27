@@ -44,6 +44,9 @@
                         <!--如果 user 为空就显示登录按钮-->
                         <li th:if="${session.user == null}"><a href="https://github.com/login/oauth/authorize?client_id=d09a650263d08038e5be&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
                         </li>
+                        <li th:if="${session.user != null}">
+                            <a href="/publish">发布</a>
+                        </li>
                         <!--如果不为空,就显示 user 的 name-->
                         <li class="dropdown" th:if="${session.user != null}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"

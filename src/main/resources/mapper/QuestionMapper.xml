@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应到dao层的接口类路径 -->
+<mapper namespace="com.huvenbbs.community.dao.QuestionMapper">
+
+    <insert id="insert" parameterType="Question">
+        insert into
+        t_question(title,description,gmt_create,gmt_modified,
+            creator_id,comment_count,view_count,like_count,tag)
+        values(#{title},#{description},#{gmtCreate},#{gmtModified},
+            #{creatorId},#{commentCount},#{viewCount},#{likeCount},#{tag})
+    </insert>
+
+</mapper>

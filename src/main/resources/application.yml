@@ -33,6 +33,16 @@ spring:
     url: jdbc:mysql://localhost:3306/hb
     # 连接池类型
     type: com.alibaba.druid.pool.DruidDataSource
+# 配置编码问题
+  messages:
+    encoding: utf-8
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force-request: true
+      force-response: true
+
 
 # mybatis配置
 mybatis:
@@ -40,3 +50,4 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   # 配置实体类的包路径
   type-aliases-package: com.huvenbbs.community.pojo
+
